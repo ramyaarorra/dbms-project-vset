@@ -1,0 +1,122 @@
+<--- index.html --->
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monthly Expenses</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+    <h1 class="mb-4">Monthly Expenses</h1>
+
+    <form method="POST" action="/add_month" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="month" class="form-control" placeholder="Month (e.g. January)" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="year" class="form-control" placeholder="Year" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="budget" step="0.01" class="form-control" placeholder="Budget" required>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">Add Month</button>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Budget</th>
+                <th>Spent</th>
+                <th>Left</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in months %}
+            <tr>
+                <td>{{ m[1] }}</td>
+                <td>{{ m[2] }}</td>
+                <td>{{ m[3] }}</td>
+                <td>{{ m[4] }}</td>
+                <td>{{ m[5] }}</td>
+                <td><a href="/details/{{ m[0] }}" class="btn btn-sm btn-info">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+```
+<--- details.html --->
+  <!DOCTYPE html>
+<html>
+<head>
+    <title>Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+    <h2>Details for {{ month[1] }} {{ month[2] }}</h2>
+    <p><strong>Budget:</strong> {{ month[3] }} | <strong>Spent:</strong> {{ month[4] }} | <strong>Left:</strong> {{ month[5] }}</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="alert alert-warning">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/add_item/{{ month[0] }}" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <input type="text" name="item" class="form-control" placeholder="Item name" required>
+        </div>
+        <div class="col-md-4">
+            <input type="number" name="cost" step="0.01" class="form-control" placeholder="Cost" required>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-success w-100">Add Item</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Item</th>
+                <th>Cost</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in items %}
+            <tr>
+                <td colspan="3">
+                    <form method="POST" action="/edit_item/{{ i[0] }}/{{ month[0] }}" class="row g-2 align-items-center">
+                        <div class="col-md-4">
+                            <input name="item" value="{{ i[1] }}" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input name="cost" type="number" step="0.01" value="{{ i[2] }}" class="form-control" required>
+                        </div>
+                        <div class="col-md-5 d-flex gap-2">
+                            <button class="btn btn-sm btn-warning">Update</button>
+                            <a href="/delete_item/{{ i[0] }}/{{ month[0] }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this item?')">Delete</a>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if chart %}
+    <h4>Expense Distribution</h4>
+    <img src="/{{ chart }}" alt="Chart" class="img-fluid">
+    {% endif %}
+
+    <a href="/" class="btn btn-secondary mt-4">Back</a>
+</body>
+</html>
