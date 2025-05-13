@@ -1,9 +1,13 @@
 🧾 dbms-project-vset
+
 This is a fun little budget tracker I made for my Database Management Systems lab!
 
 💻 Technologies Used
+
 Flask
+
 SQLite3
+
 Jinja2
 
 ⚙️ Flask
