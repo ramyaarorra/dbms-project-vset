@@ -38,6 +38,7 @@ The os library in Python helps interact with the operating system—for example,
 2. NOT NULL constraints ensure essential fields like budget, month, and item are always filled.
    
 3. Foreign Keys maintain relational integrity, making sure every item is tied to a valid month and preventing orphan records.
+   
 
 🎉 Functioning
 This project is a simple monthly expense tracker built with Flask, SQLite, Jinja2, and Bootstrap.
